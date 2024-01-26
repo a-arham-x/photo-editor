@@ -12,11 +12,18 @@ export default function Editor() {
   const [showBrightnessSlider, setShowBrightnessSlider] = useState<string>("none");
   const [brightness, setBrightness] = useState<number>(0)
   const [showCroppingDone, setShowCroppingDone] = useState<boolean>(false);
+  const [size, setSize] = useState<number>(1);
+  const [showResizeSlider, setShowResizeSlider] = useState<string>("none");
+  const [openImage, setOpenImage] = useState<string>();
+  const [fileInputVisible, setFileInputVisible] = useState<boolean>(true);
+  
+  const CANVAS_WIDTH = 640
+  const CANVAS_HEIGHT = 480
 
   useEffect(() => {
     var c = new fabric.Canvas("canvas", {
-      height: 600,
-      width: 800,
+      height: CANVAS_HEIGHT,
+      width: CANVAS_WIDTH,
       backgroundColor: "#041E42"
     })
   
@@ -26,9 +33,46 @@ export default function Editor() {
       c.dispose();
     };
   }, []);
-  const setImage = () => {
 
-    fabric.Image.fromURL("/whitebread.jfif", function (img) {
+  const selectImage = (e: any)=>{
+    const imageObject = getImageObject();
+    if (imageObject){return}
+    let imageFile = e.target.files[0]
+    let reader = new FileReader;
+    reader.readAsDataURL(imageFile);
+    reader.onload = (event: any)=>{
+      console.log("reader loaded")
+      fabric.Image.fromURL(event.target.result, function (img) {
+        // Set the position and size of the image
+        img.set({
+          centeredRotation: true,
+          left: 0,
+          top: 0,
+        });
+  
+        if (canvas?.width && canvas?.height && img?.height && img?.width){
+          img.set({
+            scaleX: canvas.width / img.width,
+            scaleY: canvas.height / img.height,
+          })
+        }
+
+        setOpenImage(event.target.result);
+        setFileInputVisible(false)
+  
+        // Add the image to the canvas
+        canvas?.add(img);
+  
+        // Render the canvas
+        canvas?.renderAll();
+      });
+    }
+  }
+
+  const setImage = () => {
+    console.log(openImage)
+    if (!openImage){return}
+    fabric.Image.fromURL(openImage, function (img) {
       // Set the position and size of the image
       img.set({
         centeredRotation: true,
@@ -105,7 +149,6 @@ export default function Editor() {
     imageObject.applyFilters();
     setBrightness(parseInt(event.target.value))
     // Render the canvas to reflect the changes
-
     canvas?.renderAll();
   }
   }
@@ -118,6 +161,11 @@ export default function Editor() {
       canvas?.remove(cropRect);
     }
     removeImage();
+    canvas?.setWidth(CANVAS_WIDTH);
+    canvas?.setHeight(CANVAS_HEIGHT);
+    setSize(1);
+    setShowBrightnessSlider("none");
+    setShowResizeSlider("none")
     setImage();
   }
 
@@ -125,11 +173,6 @@ export default function Editor() {
     const imageObject = getImageObject();
 
     if (imageObject && canvas?.width && canvas?.height && imageObject.width && imageObject.height) {
-      // console.log(imageObject.left)
-      // console.log(imageObject.top)
-      console.log(canvas.width-imageObject.height)
-        console.log(canvas.width)
-        console.log(imageObject.height/canvas.height);
       canvas?.renderAll();
       if (imageObject.angle==0){
         imageObject.set({ angle: 90, left: 0.875*canvas.width, top: 0});
@@ -160,7 +203,6 @@ export default function Editor() {
 
   const applyContrast = ()=>{
     const imageObject = getImageObject();
-    console.log("contrast")
     var filter = new fabric.Image.filters.Contrast({
       contrast: 0.25
     });
@@ -210,10 +252,13 @@ export default function Editor() {
     }
     setIsCropping(false)
     setShowCroppingDone(false)
+    setFileInputVisible(true)
     canvas?.remove(object);
   };
 
   const toggleBrightnessSlider = ()=>{
+    const imageObject = getImageObject();
+    if (!imageObject){return}
     if (showBrightnessSlider=="none"){
       setShowBrightnessSlider("flex")
     }else if (showBrightnessSlider=="flex"){
@@ -222,16 +267,15 @@ export default function Editor() {
     }
   }
 
-  // const discardBrightnessChanges = ()=>{
-  //   setBrightness(0);
-  //   var filter = new fabric.Image.filters.Brightness({
-  //     brightness: 0
-  //   });
-  //   const imageObject = getImageObject();
-  //   imageObject?.filters?.push(filter);
-  //   imageObject?.applyFilters();
-  //   canvas?.renderAll();
-  // }
+  const toggleResizeSlider = ()=>{
+    const imageObject = getImageObject();
+    if (!imageObject){return}
+    if (showResizeSlider=="none"){
+      setShowResizeSlider("flex")
+    }else if (showResizeSlider=="flex"){
+      setShowResizeSlider("none")
+    }
+  }
 
   const handleDownload = async () => {
     try {
@@ -266,7 +310,6 @@ export default function Editor() {
       // Clean up
       link.remove();
     } catch (error) {
-      console.error(error);
       window.alert("Download Failed");
     }
   };
@@ -282,48 +325,33 @@ export default function Editor() {
         width:cropRect?.getScaledWidth()?cropRect.getScaledWidth()*(imageObject?.width/cropRect?.width):imageObject?.width,
         height: cropRect?.getScaledHeight()?cropRect.getScaledHeight()*(imageObject.height/cropRect.height):imageObject?.height
       })
-      // console.log(cropRect?.width*0.6)
       imageObject.clipPath=clipPath
-      console.log(imageObject.getScaledWidth(), imageObject.getScaledHeight(), cropRect.getScaledHeight(), cropRect.getScaledWidth())
-      console.log(canvas?.width, canvas?.height)
       canvas?.remove(cropRect);
+      imageObject.set({width: cropRect.getScaledWidth()*(imageObject?.width/cropRect?.width), height: cropRect.getScaledHeight()*(imageObject.height/cropRect.height)})
+      canvas?.setWidth(cropRect.getScaledWidth()*(imageObject?.width/cropRect?.width))
+      canvas?.setHeight(cropRect.getScaledHeight()*(imageObject.height/cropRect.height))
+      if (canvas?.width && canvas?.height){
+        imageObject.set({
+          scaleX: canvas?.width / imageObject.width,
+          scaleY: canvas?.height / imageObject.height,
+          top: 0, left: 0
+        })
+      }
+
       canvas?.renderAll();
-      // if (cropRect?.left && cropRect?.height && canvas?.width && canvas?.height){
-      //   removeImage();
-      //   console.log("Duz Duz")
-      //   const imageDataURL = imageObject?.toDataURL({ format: 'png', multiplier: 2 });
-      //   fabric.Image.fromURL(imageDataURL, function(img){
-      //     img.set({
-      //       centeredRotation: true,
-      //       left: 0,
-      //       top: 0,
-      //     });
-    
-      //     // if (canvas?.width && canvas?.height && img?.height && img?.width){
-      //     //   img.set({
-      //     //     scaleX: canvas.width / img.width,
-      //     //     scaleY: canvas.height / img.height,
-      //     //   })
-      //     // }
-    
-      //     // Add the image to the canvas
-      //     canvas?.add(img);
-      //   })
-      // }
     }
-    console.log(imageObject?.left, imageObject?.top)
     setShowCroppingDone(false)
    canvas?.renderAll();
   }
 
-  const resizeImage = ()=>{
+  const resizeImage = (e: any)=>{
+    setSize(e.target.value/6);
+    console.log(size)
     const imageObject = getImageObject();
     console.log(imageObject?.width, imageObject?.height)
     if (imageObject && canvas?.width && canvas?.height && imageObject.width && imageObject.height){
-      const originalWidth = canvas?.width;
-      const originalHeight = canvas?.height;
-      canvas?.setWidth(originalWidth*0.5);
-      canvas?.setHeight(originalHeight*0.5);
+      canvas?.setWidth(CANVAS_WIDTH*size);
+      canvas?.setHeight(CANVAS_HEIGHT*size);
       imageObject.set({
         scaleX: canvas.width / imageObject.width,
         scaleY: canvas.height / imageObject.height,
@@ -336,7 +364,6 @@ export default function Editor() {
     <>
     <div className="editing-page">
     <nav>
-      <button className="edit-button" onClick={setImage}>Choose file</button>
       <button className="edit-button" onClick={openFilterModal}>Filter</button>
       <button className="edit-button" onClick={toggleBrightnessSlider}>Brightness</button>
       <div className="brightness-slider" style={{display: showBrightnessSlider}}>
@@ -347,13 +374,17 @@ export default function Editor() {
       <button className="edit-button" onClick={applyContrast}>Contrast</button>
       <button className="edit-button" onClick={startCropping}>Crop</button>
       <button onClick={crop} style={{display:showCroppingDone?"block":"none"}} className="crop-button">Done</button>
-      <button className="edit-button" onClick={resizeImage}>Resize</button>
+      <button className="edit-button" onClick={toggleResizeSlider}>Resize</button>
+      <div className="resize-slider" style={{display:showResizeSlider}}>
+      <input type="range" min="1" max="12" onChange={resizeImage} value={(size*6).toString()}/>
+      </div>
       <button className="edit-button" onClick={discardChanges}>Discard Changes</button>
       <button className="edit-button" onClick={removeImage}>Remove Image</button>
       <button className="edit-button" onClick={handleDownload}>Download Image</button>
     </nav>
+    <div className="canvas-container">
+    <input type="file" style={{display:fileInputVisible?"block":"none"}} onChange={selectImage}/>
     <canvas id="canvas" />
-    <div className="editing-buttons">
     </div>
     </div>
     {setshowFilterModal && <FilterModel showModal={setsetshowFilterModal} convertToGrayScale={convertToGrayScale} goSepia={goSepia}/>}

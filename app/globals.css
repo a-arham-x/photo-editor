@@ -127,6 +127,10 @@ body {
   padding: 5px;
 }
 
+.canvas-container{
+  margin: auto;
+}
+
 @layer utilities {
   .text-balance {
     text-wrap: balance;
