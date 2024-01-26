@@ -1,0 +1,36 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+	<!-- Adding the FabricJS library -->
+	<script src= 
+"https://cdnjs.cloudflare.com/ajax/libs/fabric.js/3.6.2/fabric.min.js"> 
+	</script> 
+</head> 
+
+<body> 
+	<div style="text-align: center; width: 500px;"> 
+		<h1 style="color: green;"> 
+			GeeksforGeeks 
+		</h1> 
+
+		<b> 
+			Fabric.js Example 
+		</b> 
+	</div> 
+
+	<canvas id="canvas" width="500" height="300"
+		style="border:1px solid #000000"> 
+	</canvas> 
+
+	<script> 
+
+		// Initiate a Canvas instance 
+		var canvas = new fabric.Canvas("canvas", { 
+				
+			// Set the background color 
+			// of the Canvas 
+			backgroundColor: "cyan" 
+		}); 
+	</script> 
+</body> 
+</html>

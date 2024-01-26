@@ -1,0 +1,134 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --foreground-rgb: 0, 0, 0;
+  --background-start-rgb: 214, 219, 220;
+  --background-end-rgb: 255, 255, 255;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --foreground-rgb: 255, 255, 255;
+    --background-start-rgb: 0, 0, 0;
+    --background-end-rgb: 0, 0, 0;
+  }
+}
+
+.edit-button{
+  color: white;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #202020;
+}
+
+.editing-page{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+nav{
+  display: flex;
+  flex-direction: column;
+  background-color: black;
+  height: 100vh;
+  padding: 20px;
+}
+
+body {
+  color: rgb(var(--foreground-rgb));
+  background-color: #101010;
+  /* background: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(var(--background-end-rgb))
+    )
+    rgb(var(--background-start-rgb)); */
+}
+
+.modal-wrapper{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  border: 2px solid white;
+  background-color: #101010;
+  margin: auto;
+  width: 450px;
+  height: 300px;
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  top: 0;
+}
+
+.modal-closer{
+  margin-left: auto;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.modal-wrapper>p{
+  color: white;
+}
+
+.filter-container{
+  display: flex;
+  justify-content: space-between;
+}
+
+.filter{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.filter-button{
+  background-color: #202020;
+  color: white;
+  margin: 10px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.apply-button{
+  background-color: #202020;
+  color: white;
+  margin: 10px;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: auto;
+  margin-left: auto;
+}
+
+.brightness-slider{
+  display: flex;
+  flex-direction: column;
+  background-color: #101010;
+}
+
+.brightness-slider>button{
+  color: white;
+}
+
+.crop-buttons{
+  display: flex;
+  justify-content: space-between;
+}
+
+.crop-button{
+  color: white;
+  background-color: #101010;
+  padding: 5px;
+}
+
+@layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+}
