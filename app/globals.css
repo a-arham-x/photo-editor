@@ -16,6 +16,32 @@
   }
 }
 
+.auth-buttons{
+  float: right;
+  margin-left: auto;
+}
+
+.auth-button{
+  color: white;
+  margin-top: 10px;
+  margin-bottom: 10px;
+  padding: 10px;
+  border-radius: 5px;
+  background-color: #202020;
+  margin: 10px;
+  float: right;
+}
+
+.nav-row{
+  display: flex;
+  align-items: center;
+  margin: 5px;
+}
+
+.nav-row>img{
+  cursor: pointer;
+}
+
 .edit-button{
   color: white;
   margin-top: 10px;
@@ -48,6 +74,60 @@ body {
       rgb(var(--background-end-rgb))
     )
     rgb(var(--background-start-rgb)); */
+}
+
+
+.landing-page{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.row{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 90%;
+  margin-top: 15%;
+  margin-bottom: 10%;
+}
+
+.row>p{
+  font-size: 20px;
+  color: white;
+  margin-left: 20%;
+  margin-right: 20%;
+}
+
+.row>img{
+  border: 2px solid white;
+}
+
+.auth-form{
+  display: flex;
+  flex-direction: column;
+  padding:30px;
+  justify-content: center;
+  align-items: center;
+  border: 5px solid white;
+  border-radius: 6px;
+  width: fit-content;
+  margin: auto;
+  margin-top: 10%
+}
+
+.auth-label{
+  font-size: 20px;
+  color: white;
+  margin-top: 10px;
+}
+
+.auth-input{
+  width: 200px;
+  height: 25px;
+  border-radius: 4px;
+  margin-bottom: 10px;
 }
 
 .modal-wrapper{

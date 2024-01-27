@@ -36,12 +36,12 @@ export default function Editor() {
 
   const selectImage = (e: any)=>{
     const imageObject = getImageObject();
+    
     if (imageObject){return}
     let imageFile = e.target.files[0]
     let reader = new FileReader;
     reader.readAsDataURL(imageFile);
     reader.onload = (event: any)=>{
-      console.log("reader loaded")
       fabric.Image.fromURL(event.target.result, function (img) {
         // Set the position and size of the image
         img.set({
@@ -58,6 +58,7 @@ export default function Editor() {
         }
 
         setOpenImage(event.target.result);
+        (document.getElementById("file-input") as HTMLInputElement).value = "";
         setFileInputVisible(false)
   
         // Add the image to the canvas
@@ -161,6 +162,7 @@ export default function Editor() {
       canvas?.remove(cropRect);
     }
     removeImage();
+    setFileInputVisible(false)
     canvas?.setWidth(CANVAS_WIDTH);
     canvas?.setHeight(CANVAS_HEIGHT);
     setSize(1);
@@ -250,6 +252,8 @@ export default function Editor() {
         window.alert('Please select the element to remove');
         return '';
     }
+    canvas?.setWidth(CANVAS_WIDTH);
+    canvas?.setHeight(CANVAS_HEIGHT);
     setIsCropping(false)
     setShowCroppingDone(false)
     setFileInputVisible(true)
@@ -327,16 +331,16 @@ export default function Editor() {
       })
       imageObject.clipPath=clipPath
       canvas?.remove(cropRect);
-      imageObject.set({width: cropRect.getScaledWidth()*(imageObject?.width/cropRect?.width), height: cropRect.getScaledHeight()*(imageObject.height/cropRect.height)})
-      canvas?.setWidth(cropRect.getScaledWidth()*(imageObject?.width/cropRect?.width))
-      canvas?.setHeight(cropRect.getScaledHeight()*(imageObject.height/cropRect.height))
-      if (canvas?.width && canvas?.height){
-        imageObject.set({
-          scaleX: canvas?.width / imageObject.width,
-          scaleY: canvas?.height / imageObject.height,
-          top: 0, left: 0
-        })
-      }
+      // imageObject.set({width: cropRect.getScaledWidth()*(imageObject?.width/cropRect?.width), height: cropRect.getScaledHeight()*(imageObject.height/cropRect.height)})
+      // canvas?.setWidth(cropRect.getScaledWidth()*(imageObject?.width/cropRect?.width))
+      // canvas?.setHeight(cropRect.getScaledHeight()*(imageObject.height/cropRect.height))
+      // if (canvas?.width && canvas?.height){
+      //   imageObject.set({
+      //     scaleX: canvas?.width / imageObject.width,
+      //     scaleY: canvas?.height / imageObject.height,
+      //     top: 0, left: 0
+      //   })
+      // }
 
       canvas?.renderAll();
     }
@@ -346,9 +350,7 @@ export default function Editor() {
 
   const resizeImage = (e: any)=>{
     setSize(e.target.value/6);
-    console.log(size)
     const imageObject = getImageObject();
-    console.log(imageObject?.width, imageObject?.height)
     if (imageObject && canvas?.width && canvas?.height && imageObject.width && imageObject.height){
       canvas?.setWidth(CANVAS_WIDTH*size);
       canvas?.setHeight(CANVAS_HEIGHT*size);
@@ -383,7 +385,7 @@ export default function Editor() {
       <button className="edit-button" onClick={handleDownload}>Download Image</button>
     </nav>
     <div className="canvas-container">
-    <input type="file" style={{display:fileInputVisible?"block":"none"}} onChange={selectImage}/>
+    <input type="file" id="file-input" style={{display:fileInputVisible?"block":"none", color: "white"}} onChange={selectImage}/>
     <canvas id="canvas" />
     </div>
     </div>
