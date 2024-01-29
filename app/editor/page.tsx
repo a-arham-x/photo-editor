@@ -39,6 +39,14 @@ export default function Editor() {
     
     if (imageObject){return}
     let imageFile = e.target.files[0]
+    const allowedExtensions = ["png", "jpeg", "jpg", "jfif"];
+    console.log(e.target.files[0])
+    const fileExtension = e.target.files[0].name.split(".").pop().toLowerCase();
+    if (!allowedExtensions.includes(fileExtension)){
+      (document.getElementById("file-input") as HTMLInputElement).value = "";
+      window.alert("Only files of type png, jpeg, jpg and jfif are accepteable");
+      return;
+    }
     let reader = new FileReader;
     reader.readAsDataURL(imageFile);
     reader.onload = (event: any)=>{
@@ -385,7 +393,7 @@ export default function Editor() {
       <button className="edit-button" onClick={handleDownload}>Download Image</button>
     </nav>
     <div className="canvas-container">
-    <input type="file" id="file-input" style={{display:fileInputVisible?"block":"none", color: "white"}} onChange={selectImage}/>
+    <input type="file" id="file-input" style={{display:fileInputVisible?"block":"none", color: "white"}} onChange={selectImage} accept="png, jpeg, jpg"/>
     <canvas id="canvas" />
     </div>
     </div>
