@@ -1,52 +1,12 @@
 import { NextResponse } from "next/server"
-// requiring the nodemailer package
-const nodemailer = require('nodemailer');
 import { PrismaClient } from '@prisma/client'
 const prisma = new PrismaClient()
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+import { mailVerification } from "@/helpers/getMail";
 
-// transporter function for connecting with the email to send messages
-const transporter = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-        user: "cinema.ticketing.system117@gmail.com",
-        pass: process.env.PASS
-    }
-})
 
 let verificationCode: String;
-
-// function to generate the code
-async function mailVerification(req: Request, res: Response, receiver: String) {
-    const verificationCode = Math.floor(100000 + Math.random() * 900000);
-    // generating the message
-    const message = {
-        from: "cinema.ticketing.system117@gmail.com",
-        to: receiver,
-        subject: "Account Verification",
-        text: `Your Verification Code is ${verificationCode}`
-    }
-    console.log(verificationCode);
-    // sending the mail to the user
-    try{
-        await new Promise((resolve, reject) => {
-            transporter.sendMail(message, function (err: any, info: any) {
-                // Sending error message in case of any error    
-                if (err) {
-                    reject(err);
-                } else {
-                    resolve(info);
-                }
-            });
-        });
-    }catch(e){
-
-    }
-    
-
-    return verificationCode.toString();
-}
 
 export const PUT = async (req: Request, res: Response) =>{
     const payload = await req.json();
@@ -119,5 +79,5 @@ export const POST = async (req: Request, res: Response)=>{
 
     const id = { user: { id: newUser.id } }
     const token = jwt.sign(id, process.env.JWT_SECRET);
-    return NextResponse.json({ message: token, success: true });
+    return NextResponse.json({ token, success: true });
 }

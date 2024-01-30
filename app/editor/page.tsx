@@ -1,10 +1,19 @@
 "use client"
 import React, { useState, useEffect } from "react";
 import { fabric } from "fabric";
-import FilterModel from "../components/FilterModel";
+import FilterModal from "../components/FilterModal";
+import { useRouter } from "next/navigation";
+import axios from "axios";
 
+interface user {
+  id: number,
+  name: string,
+  email: string,
+  time_created: Date
+}
 
 export default function Editor() {
+  const [user, setUser] = useState<user>();
   const [canvas, setCanvas] = useState<fabric.Canvas>();
   const [isCropping, setIsCropping] = useState<Boolean>(false);
   const [cropRect, setCropRect] = useState<fabric.Rect>();
@@ -20,7 +29,32 @@ export default function Editor() {
   const CANVAS_WIDTH = 640
   const CANVAS_HEIGHT = 480
 
+  const router = useRouter();
+
+  const fetchUser = async ()=>{
+    console.log(localStorage.getItem("user"))
+    const response = await fetch("/api/user", {
+      method: "GET", 
+      headers: {
+        "user": localStorage.getItem("user") || ""
+      }
+    })
+    const json = await response.json();
+    return json.user as user
+  }
+
   useEffect(() => {
+    if (!localStorage.getItem("user")){
+      router.push("/login")
+    }
+
+    const getUser = async ()=>{
+      setUser(await fetchUser());
+    }
+
+    getUser();
+
+    console.log(user);
     var c = new fabric.Canvas("canvas", {
       height: CANVAS_HEIGHT,
       width: CANVAS_WIDTH,
@@ -370,6 +404,35 @@ export default function Editor() {
     canvas?.renderAll();
   }
 
+  const saveImage = async ()=>{
+    const imageObject = getImageObject();
+      if (!imageObject) {
+        return;
+      }
+  
+      // Get the image data URL from the canvas
+      const imageDataURL = imageObject?.toDataURL({ format: 'png', multiplier: 2 });
+      var data = new FormData();
+
+      data.append("image", imageDataURL);
+
+      const response = await axios({
+        url: "/api/images/save",
+        method: "POST",
+        headers: {
+          "user": localStorage.getItem("user")
+        },
+        data
+      })
+      const json = response.data;
+      window.alert(json.message)
+  }
+
+  const logOut = ()=>{
+    localStorage.setItem("user", "");
+    router.push("/login")
+  }
+
   return (
     <>
     <div className="editing-page">
@@ -390,14 +453,17 @@ export default function Editor() {
       </div>
       <button className="edit-button" onClick={discardChanges}>Discard Changes</button>
       <button className="edit-button" onClick={removeImage}>Remove Image</button>
+      <button className="edit-button" onClick={saveImage}>Save Image</button>
       <button className="edit-button" onClick={handleDownload}>Download Image</button>
     </nav>
+    <h1 className="user-name">{user?.name}</h1>
     <div className="canvas-container">
     <input type="file" id="file-input" style={{display:fileInputVisible?"block":"none", color: "white"}} onChange={selectImage} accept="png, jpeg, jpg"/>
     <canvas id="canvas" />
     </div>
+    <button className="auth-button" onClick={logOut}>Logout</button>
     </div>
-    {setshowFilterModal && <FilterModel showModal={setsetshowFilterModal} convertToGrayScale={convertToGrayScale} goSepia={goSepia}/>}
+    {setshowFilterModal && <FilterModal showModal={setsetshowFilterModal} convertToGrayScale={convertToGrayScale} goSepia={goSepia}/>}
     </>
   );
 }

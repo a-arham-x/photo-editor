@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { PrismaClient } from '@prisma/client';
-import { getUser } from '@/getUser';
+import { getUser } from '@/helpers/getUser';
 const prisma = new PrismaClient();
 
 export const POST = async (req: Request, res: Response) => {
@@ -15,7 +15,6 @@ export const POST = async (req: Request, res: Response) => {
     const file: File | null = formData.get("image") as unknown as File
 
     const allowedExtensions = ["png", "jpg", "jpeg", "jfif"];
-
     const fileExtension = file.name.split(".").pop()?.toLowerCase() as string;
 
     if (!allowedExtensions.includes(fileExtension)){

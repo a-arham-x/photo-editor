@@ -1,7 +1,17 @@
 "use client"
+import { useEffect } from "react";
 import Navbar from "./components/Navbar";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+
+  const router = useRouter();
+
+  useEffect(()=>{
+    if (localStorage.getItem("user")){
+      router.push("/editor")
+    }
+  }, [])
 
   return (
     <>

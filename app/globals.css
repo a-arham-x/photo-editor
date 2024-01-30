@@ -157,6 +157,37 @@ body {
   color: white;
 }
 
+.codeform{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: auto;
+  margin-top: 50px;
+  height: 100px;
+  width: 100%;
+  margin-bottom: 50px;
+  background-color: black;
+}
+
+.codeInputs{
+  display: flex;
+  flex-direction: row;
+  height: 100px;
+  width: 80%;
+  margin-bottom: 20px;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+
+.numberInput{
+  height: 50px;
+  width: 50px;
+  font-size: 30px;
+  margin: auto;
+  border-radius: 10px;
+}
+
 .filter-container{
   display: flex;
   justify-content: space-between;
@@ -209,6 +240,17 @@ body {
 
 .canvas-container{
   margin: auto;
+}
+
+.editing-page .auth-button{
+  margin-bottom: auto;
+}
+
+.user-name{
+  color: white;
+  margin-bottom: auto;
+  padding: 20px;
+  font-size: 30px;
 }
 
 @layer utilities {
