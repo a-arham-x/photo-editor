@@ -9,7 +9,7 @@ interface image {
     imageUrl: string
 }
 
-function page() {
+function Saved() {
 
     const router = useRouter()
 
@@ -49,4 +49,4 @@ function page() {
     )
 }
 
-export default page
+export default Saved

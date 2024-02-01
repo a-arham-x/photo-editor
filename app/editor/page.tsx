@@ -4,7 +4,6 @@ import { fabric } from "fabric";
 import FilterModal from "../components/FilterModal";
 import { useRouter } from "next/navigation";
 import axios from "axios";
-import Link from "next/link";
 
 interface user {
   id: number,

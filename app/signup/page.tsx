@@ -4,7 +4,7 @@ import Navbar from '../components/Navbar'
 import { useRouter } from 'next/navigation'
 import CodeModal from "../components/CodeModal"
 
-function page() {
+function Signup() {
 
   const router = useRouter();
 
@@ -60,4 +60,4 @@ function page() {
   )
 }
 
-export default page
+export default Signup
