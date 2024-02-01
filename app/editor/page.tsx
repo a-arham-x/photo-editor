@@ -4,6 +4,7 @@ import { fabric } from "fabric";
 import FilterModal from "../components/FilterModal";
 import { useRouter } from "next/navigation";
 import axios from "axios";
+import Link from "next/link";
 
 interface user {
   id: number,
@@ -12,7 +13,7 @@ interface user {
   time_created: Date
 }
 
-export default function Editor() {
+export default function Editor(props: any) {
   const [user, setUser] = useState<user>();
   const [canvas, setCanvas] = useState<fabric.Canvas>();
   const [isCropping, setIsCropping] = useState<Boolean>(false);
@@ -25,6 +26,7 @@ export default function Editor() {
   const [showResizeSlider, setShowResizeSlider] = useState<string>("none");
   const [openImage, setOpenImage] = useState<string>();
   const [fileInputVisible, setFileInputVisible] = useState<boolean>(true);
+  const [imageUploading, setImageUploading] = useState(false);
   
   const CANVAS_WIDTH = 640
   const CANVAS_HEIGHT = 480
@@ -46,6 +48,11 @@ export default function Editor() {
   useEffect(() => {
     if (!localStorage.getItem("user")){
       router.push("/login")
+    }
+
+    if (props.imageUrl){
+      setOpenImage(props.imageUrl)
+      setImage()
     }
 
     const getUser = async ()=>{
@@ -113,7 +120,6 @@ export default function Editor() {
   }
 
   const setImage = () => {
-    console.log(openImage)
     if (!openImage){return}
     fabric.Image.fromURL(openImage, function (img) {
       // Set the position and size of the image
@@ -157,6 +163,7 @@ export default function Editor() {
   const convertToGrayScale = () => {
     const imageObject = getImageObject();
     removeImage();
+    setFileInputVisible(false)
     if (imageObject) {
       imageObject.filters?.push(new fabric.Image.filters.Grayscale());
       imageObject.applyFilters();
@@ -167,6 +174,7 @@ export default function Editor() {
   const goSepia = () => {
     const imageObject = getImageObject();
     removeImage();
+    setFileInputVisible(false)
     if (imageObject) {
       imageObject.filters?.push(new fabric.Image.filters.Sepia());
       imageObject.applyFilters();
@@ -404,17 +412,33 @@ export default function Editor() {
     canvas?.renderAll();
   }
 
+  const dataURItoFile = (dataURI: string, fileName: string) => {
+    const byteString = atob(dataURI.split(',')[1]);
+    const mimeString = dataURI.split(',')[0].split(':')[1].split(';')[0];
+
+    const ab = new ArrayBuffer(byteString.length);
+    const ia = new Uint8Array(ab);
+
+    for (let i = 0; i < byteString.length; i++) {
+      ia[i] = byteString.charCodeAt(i);
+    }
+
+    const blob = new Blob([ab], { type: mimeString });
+    return new File([blob], fileName, { type: mimeString });
+  };
+
   const saveImage = async ()=>{
     const imageObject = getImageObject();
       if (!imageObject) {
         return;
       }
-  
+      setImageUploading(true)
       // Get the image data URL from the canvas
       const imageDataURL = imageObject?.toDataURL({ format: 'png', multiplier: 2 });
+      const file = dataURItoFile(imageDataURL, "image.png")
       var data = new FormData();
 
-      data.append("image", imageDataURL);
+      data.append("image", file);
 
       const response = await axios({
         url: "/api/images/save",
@@ -425,7 +449,12 @@ export default function Editor() {
         data
       })
       const json = response.data;
+      setImageUploading(false)
       window.alert(json.message)
+  }
+
+  const openSaved = ()=>{
+    router.push("/saved")
   }
 
   const logOut = ()=>{
@@ -436,7 +465,7 @@ export default function Editor() {
   return (
     <>
     <div className="editing-page">
-    <nav>
+    <nav className="editor-nav">
       <button className="edit-button" onClick={openFilterModal}>Filter</button>
       <button className="edit-button" onClick={toggleBrightnessSlider}>Brightness</button>
       <div className="brightness-slider" style={{display: showBrightnessSlider}}>
@@ -454,6 +483,7 @@ export default function Editor() {
       <button className="edit-button" onClick={discardChanges}>Discard Changes</button>
       <button className="edit-button" onClick={removeImage}>Remove Image</button>
       <button className="edit-button" onClick={saveImage}>Save Image</button>
+      {imageUploading && <p style={{color: "white"}}>Saving Image...</p>}
       <button className="edit-button" onClick={handleDownload}>Download Image</button>
     </nav>
     <h1 className="user-name">{user?.name}</h1>
@@ -461,6 +491,7 @@ export default function Editor() {
     <input type="file" id="file-input" style={{display:fileInputVisible?"block":"none", color: "white"}} onChange={selectImage} accept="png, jpeg, jpg"/>
     <canvas id="canvas" />
     </div>
+    <button className="auth-button" onClick={openSaved}>Saved</button>
     <button className="auth-button" onClick={logOut}>Logout</button>
     </div>
     {setshowFilterModal && <FilterModal showModal={setsetshowFilterModal} convertToGrayScale={convertToGrayScale} goSepia={goSepia}/>}

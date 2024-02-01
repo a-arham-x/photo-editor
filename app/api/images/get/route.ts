@@ -23,7 +23,7 @@ export const GET = async (req: Request)=>{
         const content = images[i].content
         const imageUrl = `data:${(content as any).contentType};base64,${base64Data}`;
 
-        imagesToSend.push({imageUrl})
+        imagesToSend.push({id: images[i].id, imageUrl})
     }
 
     return NextResponse.json({images: imagesToSend, success: true})

@@ -13,7 +13,7 @@ export const POST = async (req: Request, res: Response) => {
 
     const formData = await req.formData();
     const file: File | null = formData.get("image") as unknown as File
-
+    
     const allowedExtensions = ["png", "jpg", "jpeg", "jfif"];
     const fileExtension = file.name.split(".").pop()?.toLowerCase() as string;
 
@@ -36,6 +36,6 @@ export const POST = async (req: Request, res: Response) => {
         }
     })
 
-    return NextResponse.json({message: "Image uploaded", success: true})
+    return NextResponse.json({message: "Image Saved", success: true})
 };  
 

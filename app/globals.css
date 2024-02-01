@@ -29,7 +29,6 @@
   border-radius: 5px;
   background-color: #202020;
   margin: 10px;
-  float: right;
 }
 
 .nav-row{
@@ -57,12 +56,16 @@
   align-items: center;
 }
 
-nav{
+.editor-nav{
   display: flex;
   flex-direction: column;
   background-color: black;
   height: 100vh;
   padding: 20px;
+}
+
+.saved-nav{
+  width: 100vw;
 }
 
 body {
@@ -251,6 +254,15 @@ body {
   margin-bottom: auto;
   padding: 20px;
   font-size: 30px;
+}
+
+.image-card{
+  margin: auto;
+  padding: 20px;
+  border: 10px solid white;
+  border-radius: 10px;
+  width: fit-content;
+  margin-top: 30px;;
 }
 
 @layer utilities {
