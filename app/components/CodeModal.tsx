@@ -41,7 +41,7 @@ function CodeModal(props:any) {
   return (
     <div className="modal-wrapper">
       <p className="modal-closer" onClick={closeModal}>X</p>
-      {showProcessing && <p style={{color: "white"}}>Processing...</p>}
+      {showProcessing && <p style={{color: 'white'}}>Processing...</p>}
       <form className="codeform" onSubmit={signup}>
                 <label className="form-label" style={{marginBottom: "20px"}}>Enter Code</label>
                 <div className="codeInputs">

@@ -43,7 +43,7 @@ function Signup() {
   return (
     <>
     <Navbar />
-    {showProcessing && <p style={{color: "white"}}>Processing...</p>}
+    {showProcessing && <p style={{color: 'white'}}>Processing...</p>}
     <form className="auth-form" onSubmit={getMail}>
         <label htmlFor="email" className="auth-label">Email</label>
         <input type="email" className="auth-input" id="email" name="email" value={credentials.email} onChange={handleChange} required/>

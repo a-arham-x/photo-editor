@@ -474,7 +474,7 @@ export default function Editor(props: any) {
       <button className="edit-button" onClick={rotateImage}>Rotate Image</button>
       <button className="edit-button" onClick={applyContrast}>Contrast</button>
       <button className="edit-button" onClick={startCropping}>Crop</button>
-      <button onClick={crop} style={{display:showCroppingDone?"block":"none"}} className="crop-button">Done</button>
+      <button onClick={crop} style={{display:showCroppingDone?'block':'none'}} className="crop-button">Done</button>
       <button className="edit-button" onClick={toggleResizeSlider}>Resize</button>
       <div className="resize-slider" style={{display:showResizeSlider}}>
       <input type="range" min="1" max="12" onChange={resizeImage} value={(size*6).toString()}/>
@@ -482,12 +482,12 @@ export default function Editor(props: any) {
       <button className="edit-button" onClick={discardChanges}>Discard Changes</button>
       <button className="edit-button" onClick={removeImage}>Remove Image</button>
       <button className="edit-button" onClick={saveImage}>Save Image</button>
-      {imageUploading && <p style={{color: "white"}}>Saving Image...</p>}
+      {imageUploading && <p style={{color: 'white'}}>Saving Image...</p>}
       <button className="edit-button" onClick={handleDownload}>Download Image</button>
     </nav>
     <h1 className="user-name">{user?.name}</h1>
     <div className="canvas-container">
-    <input type="file" id="file-input" style={{display:fileInputVisible?"block":"none", color: "white"}} onChange={selectImage} accept="png, jpeg, jpg"/>
+    <input type="file" id="file-input" style={{display:fileInputVisible?'block':'none', color: 'white'}} onChange={selectImage} accept="png, jpeg, jpg, jfif"/>
     <canvas id="canvas" />
     </div>
     <button className="auth-button" onClick={openSaved}>Saved</button>
