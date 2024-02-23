@@ -19,11 +19,11 @@ export default function Home() {
       <div className="landing-page">
         <div className="row">
           <img src="/landing-page-image-1.png" alt="an image" width="500"/>
-          <p>We invite you to unleash your boundless creativity, capture fleeting moments, and entrust us with transforming your vision into an unforgettable masterpiece. Together, we'll weave the magic that brings your photographs to life.</p>
+          <p>We invite you to unleash your boundless creativity, capture fleeting moments, and entrust us with transforming your vision into an unforgettable masterpiece. Together, well weave the magic that brings your photographs to life.</p>
         </div>
         <div className="row">
           <p>
-          Embark on a journey where we collaborate to turn the ordinary into the extraordinary. Our platform is not just a photo editor; it's a creative sanctuary where your imagination takes center stage, and together, we paint vivid stories on the canvas of your memories.
+          Embark on a journey where we collaborate to turn the ordinary into the extraordinary. Our platform is not just a photo editor; its a creative sanctuary where your imagination takes center stage, and together, we paint vivid stories on the canvas of your memories.
           </p>
           <img src="/landing-page-image-2.jpg" alt="an image" width="500"/>
         </div>
