@@ -12,7 +12,7 @@ interface user {
   time_created: Date
 }
 
-export default function Editor(props: any) {
+export default function Editor() {
   const [user, setUser] = useState<user>();
   const [canvas, setCanvas] = useState<fabric.Canvas>();
   const [isCropping, setIsCropping] = useState<Boolean>(false);
@@ -49,10 +49,10 @@ export default function Editor(props: any) {
       router.push("/login")
     }
 
-    if (props.imageUrl){
-      setOpenImage(props.imageUrl)
-      setImage()
-    }
+    // if (props.imageUrl){
+    //   setOpenImage(props.imageUrl)
+    //   setImage()
+    // }
 
     const getUser = async ()=>{
       setUser(await fetchUser());
