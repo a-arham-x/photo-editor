@@ -30,7 +30,6 @@ function Login() {
       },
       body: JSON.stringify(credentials)
     })
-    console.log("This is response: ", response);
     const json = await response.json();
     setShowProcessing(false);
     if (json.success){
