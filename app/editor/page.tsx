@@ -26,16 +26,16 @@ export default function Editor(props: any) {
   const [openImage, setOpenImage] = useState<string>();
   const [fileInputVisible, setFileInputVisible] = useState<boolean>(true);
   const [imageUploading, setImageUploading] = useState(false);
-  
+
   const CANVAS_WIDTH = 640
   const CANVAS_HEIGHT = 480
 
   const router = useRouter();
 
-  const fetchUser = async ()=>{
+  const fetchUser = async () => {
     console.log(localStorage.getItem("user"))
     const response = await fetch("/api/user", {
-      method: "GET", 
+      method: "GET",
       headers: {
         "user": localStorage.getItem("user") || ""
       }
@@ -45,16 +45,16 @@ export default function Editor(props: any) {
   }
 
   useEffect(() => {
-    if (!localStorage.getItem("user")){
+    if (!localStorage.getItem("user")) {
       router.push("/login")
     }
 
-    if (props.imageUrl){
+    if (props.imageUrl) {
       setOpenImage(props.imageUrl)
       setImage()
     }
 
-    const getUser = async ()=>{
+    const getUser = async () => {
       setUser(await fetchUser());
     }
 
@@ -66,7 +66,7 @@ export default function Editor(props: any) {
       width: CANVAS_WIDTH,
       backgroundColor: "#041E42"
     })
-  
+
     setCanvas(c);;
 
     return () => {
@@ -74,22 +74,22 @@ export default function Editor(props: any) {
     };
   }, []);
 
-  const selectImage = (e: any)=>{
+  const selectImage = (e: any) => {
     const imageObject = getImageObject();
-    
-    if (imageObject){return}
+
+    if (imageObject) { return }
     let imageFile = e.target.files[0]
     const allowedExtensions = ["png", "jpeg", "jpg", "jfif"];
     console.log(e.target.files[0])
     const fileExtension = e.target.files[0].name.split(".").pop().toLowerCase();
-    if (!allowedExtensions.includes(fileExtension)){
+    if (!allowedExtensions.includes(fileExtension)) {
       (document.getElementById("file-input") as HTMLInputElement).value = "";
       window.alert("Only files of type png, jpeg, jpg and jfif are accepteable");
       return;
     }
     let reader = new FileReader;
     reader.readAsDataURL(imageFile);
-    reader.onload = (event: any)=>{
+    reader.onload = (event: any) => {
       fabric.Image.fromURL(event.target.result, function (img) {
         // Set the position and size of the image
         img.set({
@@ -97,8 +97,8 @@ export default function Editor(props: any) {
           left: 0,
           top: 0,
         });
-  
-        if (canvas?.width && canvas?.height && img?.height && img?.width){
+
+        if (canvas?.width && canvas?.height && img?.height && img?.width) {
           img.set({
             scaleX: canvas.width / img.width,
             scaleY: canvas.height / img.height,
@@ -108,10 +108,10 @@ export default function Editor(props: any) {
         setOpenImage(event.target.result);
         (document.getElementById("file-input") as HTMLInputElement).value = "";
         setFileInputVisible(false)
-  
+
         // Add the image to the canvas
         canvas?.add(img);
-  
+
         // Render the canvas
         canvas?.renderAll();
       });
@@ -119,7 +119,7 @@ export default function Editor(props: any) {
   }
 
   const setImage = () => {
-    if (!openImage){return}
+    if (!openImage) { return }
     fabric.Image.fromURL(openImage, function (img) {
       // Set the position and size of the image
       img.set({
@@ -128,7 +128,7 @@ export default function Editor(props: any) {
         top: 0,
       });
 
-      if (canvas?.width && canvas?.height && img?.height && img?.width){
+      if (canvas?.width && canvas?.height && img?.height && img?.width) {
         img.set({
           scaleX: canvas.width / img.width,
           scaleY: canvas.height / img.height,
@@ -152,9 +152,9 @@ export default function Editor(props: any) {
     return undefined;
   };
 
-  const openFilterModal = ()=>{
+  const openFilterModal = () => {
     const imageObject = getImageObject();
-    if (imageObject){
+    if (imageObject) {
       setsetshowFilterModal(true)
     }
   }
@@ -181,34 +181,34 @@ export default function Editor(props: any) {
     }
   }
 
-  const changeBrightness = (event:any) => {
+  const changeBrightness = (event: any) => {
     const imageObject = getImageObject();
 
-  if (imageObject) {
-    let filter;
-    if (brightness<parseInt(event.target.value)){
-      filter = new fabric.Image.filters.Brightness({
-        brightness: 0.05
-      });
-    }else{
-      filter = new fabric.Image.filters.Brightness({
-        brightness: -0.05
-      });
+    if (imageObject) {
+      let filter;
+      if (brightness < parseInt(event.target.value)) {
+        filter = new fabric.Image.filters.Brightness({
+          brightness: 0.05
+        });
+      } else {
+        filter = new fabric.Image.filters.Brightness({
+          brightness: -0.05
+        });
+      }
+      imageObject.filters?.push(filter);
+      imageObject.applyFilters();
+      setBrightness(parseInt(event.target.value))
+      // Render the canvas to reflect the changes
+      canvas?.renderAll();
     }
-    imageObject.filters?.push(filter);
-    imageObject.applyFilters();
-    setBrightness(parseInt(event.target.value))
-    // Render the canvas to reflect the changes
-    canvas?.renderAll();
-  }
   }
 
   const discardChanges = () => {
-    if (isCropping){
+    if (isCropping) {
       setIsCropping(false);
       setShowCroppingDone(false)
       if (cropRect)
-      canvas?.remove(cropRect);
+        canvas?.remove(cropRect);
     }
     removeImage();
     setFileInputVisible(false)
@@ -225,70 +225,70 @@ export default function Editor(props: any) {
 
     if (imageObject && canvas?.width && canvas?.height && imageObject.width && imageObject.height) {
       canvas?.renderAll();
-      if (imageObject.angle==0){
-        imageObject.set({ angle: 90, left: 0.875*canvas.width, top: 0});
+      if (imageObject.angle == 0) {
+        imageObject.set({ angle: 90, left: 0.875 * canvas.width, top: 0 });
         canvas?.renderAll();
-        return; 
+        return;
       }
 
-      if (imageObject.angle==90){
-        imageObject.set({ angle: 180, left: canvas.width, top: canvas.height});  
+      if (imageObject.angle == 90) {
+        imageObject.set({ angle: 180, left: canvas.width, top: canvas.height });
         canvas?.renderAll();
-        return; 
+        return;
       }
 
-      if (imageObject.angle==180){
-        imageObject.set({ angle: 270, left: 0.125*canvas.width, top: canvas.height});  
+      if (imageObject.angle == 180) {
+        imageObject.set({ angle: 270, left: 0.125 * canvas.width, top: canvas.height });
         canvas?.renderAll();
-        return; 
-      }   
-      
-      if (imageObject.angle==270){
-        imageObject.set({ angle: 0, left: 0, top: 0});  
+        return;
+      }
+
+      if (imageObject.angle == 270) {
+        imageObject.set({ angle: 0, left: 0, top: 0 });
         canvas?.renderAll();
-        return; 
-      }   
-      
+        return;
+      }
+
     }
   };
 
-  const applyContrast = ()=>{
+  const applyContrast = () => {
     const imageObject = getImageObject();
     var filter = new fabric.Image.filters.Contrast({
       contrast: 0.25
     });
     imageObject?.filters?.push(filter);
     imageObject?.applyFilters();
-    canvas?.renderAll();  
+    canvas?.renderAll();
   }
 
-  const startCropping = ()=>{
+  const startCropping = () => {
     setIsCropping(true);
     setShowCroppingDone(true);
     const imageObject = getImageObject();
-    if (!imageObject){
+    if (!imageObject) {
       return
     }
-    if (isCropping){
+    if (isCropping) {
       setIsCropping(false);
       setShowCroppingDone(false);
-      if (cropRect){
+      if (cropRect) {
         canvas?.remove(cropRect)
       }
       canvas?.renderAll();
     }
-    else{
+    else {
       const currentRect = new fabric.Rect({
         left: 0,
         top: 0,
-        width: canvas?.width?canvas.width-1:359,
-        height: canvas?.height?canvas.height-1:359,
+        width: canvas?.width ? canvas.width - 1 : 359,
+        height: canvas?.height ? canvas.height - 1 : 359,
         fill: 'transparent',
         stroke: 'red',
         strokeWidth: 2,
       });
 
-      
+
       setCropRect(currentRect)
       canvas?.add(currentRect);
     }
@@ -297,9 +297,9 @@ export default function Editor(props: any) {
 
   const removeImage = () => {
     var object = getImageObject();
-    if (!object){
-        window.alert('Please select the element to remove');
-        return '';
+    if (!object) {
+      window.alert('Please select the element to remove');
+      return '';
     }
     canvas?.setWidth(CANVAS_WIDTH);
     canvas?.setHeight(CANVAS_HEIGHT);
@@ -309,23 +309,23 @@ export default function Editor(props: any) {
     canvas?.remove(object);
   };
 
-  const toggleBrightnessSlider = ()=>{
+  const toggleBrightnessSlider = () => {
     const imageObject = getImageObject();
-    if (!imageObject){return}
-    if (showBrightnessSlider=="none"){
+    if (!imageObject) { return }
+    if (showBrightnessSlider == "none") {
       setShowBrightnessSlider("flex")
-    }else if (showBrightnessSlider=="flex"){
+    } else if (showBrightnessSlider == "flex") {
       setShowBrightnessSlider("none")
       setBrightness(0);
     }
   }
 
-  const toggleResizeSlider = ()=>{
+  const toggleResizeSlider = () => {
     const imageObject = getImageObject();
-    if (!imageObject){return}
-    if (showResizeSlider=="none"){
+    if (!imageObject) { return }
+    if (showResizeSlider == "none") {
       setShowResizeSlider("flex")
-    }else if (showResizeSlider=="flex"){
+    } else if (showResizeSlider == "flex") {
       setShowResizeSlider("none")
     }
   }
@@ -336,30 +336,30 @@ export default function Editor(props: any) {
       if (!imageObject) {
         return;
       }
-  
+
       // Get the image data URL from the canvas
       const imageDataURL = imageObject?.toDataURL({ format: 'png', multiplier: 2 });
-  
+
       if (!imageDataURL) {
         window.alert("Download Failed");
         return;
       }
-  
+
       // Convert the data URL to a Blob
       const blob = await fetch(imageDataURL).then((res) => res.blob());
-  
+
       // Create a download link
       const link = document.createElement('a');
       link.href = window.URL.createObjectURL(blob);
-  
+
       // Set the filename for the download
       const fileName = 'canvas_image.png'; // Change the filename as needed
       link.setAttribute('download', fileName);
       document.body.appendChild(link);
-  
+
       // Trigger the download
       link.click();
-  
+
       // Clean up
       link.remove();
     } catch (error) {
@@ -367,18 +367,18 @@ export default function Editor(props: any) {
     }
   };
 
-  const crop = ()=>{
-    if (!isCropping){return}
+  const crop = () => {
+    if (!isCropping) { return }
     const imageObject = getImageObject();
-    if (imageObject){
-      if (!imageObject?.height || !imageObject?.width || !cropRect?.height || !cropRect?.width){return;}
+    if (imageObject) {
+      if (!imageObject?.height || !imageObject?.width || !cropRect?.height || !cropRect?.width) { return; }
       var clipPath = new fabric.Rect({
-        left: cropRect?.left?((imageObject?.width/cropRect?.width)*cropRect?.left)-(imageObject.width/2):0,
-        top: cropRect?.top?((imageObject.height/cropRect.height)*cropRect.top)-(imageObject.height/2):0,
-        width:cropRect?.getScaledWidth()?cropRect.getScaledWidth()*(imageObject?.width/cropRect?.width):imageObject?.width,
-        height: cropRect?.getScaledHeight()?cropRect.getScaledHeight()*(imageObject.height/cropRect.height):imageObject?.height
+        left: cropRect?.left ? ((imageObject?.width / cropRect?.width) * cropRect?.left) - (imageObject.width / 2) : 0,
+        top: cropRect?.top ? ((imageObject.height / cropRect.height) * cropRect.top) - (imageObject.height / 2) : 0,
+        width: cropRect?.getScaledWidth() ? cropRect.getScaledWidth() * (imageObject?.width / cropRect?.width) : imageObject?.width,
+        height: cropRect?.getScaledHeight() ? cropRect.getScaledHeight() * (imageObject.height / cropRect.height) : imageObject?.height
       })
-      imageObject.clipPath=clipPath
+      imageObject.clipPath = clipPath
       canvas?.remove(cropRect);
       // imageObject.set({width: cropRect.getScaledWidth()*(imageObject?.width/cropRect?.width), height: cropRect.getScaledHeight()*(imageObject.height/cropRect.height)})
       // canvas?.setWidth(cropRect.getScaledWidth()*(imageObject?.width/cropRect?.width))
@@ -394,15 +394,15 @@ export default function Editor(props: any) {
       canvas?.renderAll();
     }
     setShowCroppingDone(false)
-   canvas?.renderAll();
+    canvas?.renderAll();
   }
 
-  const resizeImage = (e: any)=>{
-    setSize(e.target.value/6);
+  const resizeImage = (e: any) => {
+    setSize(e.target.value / 6);
     const imageObject = getImageObject();
-    if (imageObject && canvas?.width && canvas?.height && imageObject.width && imageObject.height){
-      canvas?.setWidth(CANVAS_WIDTH*size);
-      canvas?.setHeight(CANVAS_HEIGHT*size);
+    if (imageObject && canvas?.width && canvas?.height && imageObject.width && imageObject.height) {
+      canvas?.setWidth(CANVAS_WIDTH * size);
+      canvas?.setHeight(CANVAS_HEIGHT * size);
       imageObject.set({
         scaleX: canvas.width / imageObject.width,
         scaleY: canvas.height / imageObject.height,
@@ -426,74 +426,74 @@ export default function Editor(props: any) {
     return new File([blob], fileName, { type: mimeString });
   };
 
-  const saveImage = async ()=>{
+  const saveImage = async () => {
     const imageObject = getImageObject();
-      if (!imageObject) {
-        return;
-      }
-      setImageUploading(true)
-      // Get the image data URL from the canvas
-      const imageDataURL = imageObject?.toDataURL({ format: 'png', multiplier: 2 });
-      const file = dataURItoFile(imageDataURL, "image.png")
-      var data = new FormData();
+    if (!imageObject) {
+      return;
+    }
+    setImageUploading(true)
+    // Get the image data URL from the canvas
+    const imageDataURL = imageObject?.toDataURL({ format: 'png', multiplier: 2 });
+    const file = dataURItoFile(imageDataURL, "image.png")
+    var data = new FormData();
 
-      data.append("image", file);
+    data.append("image", file);
 
-      const response = await axios({
-        url: "/api/images/save",
-        method: "POST",
-        headers: {
-          "user": localStorage.getItem("user")
-        },
-        data
-      })
-      const json = response.data;
-      setImageUploading(false)
-      window.alert(json.message)
+    const response = await axios({
+      url: "/api/images/save",
+      method: "POST",
+      headers: {
+        "user": localStorage.getItem("user")
+      },
+      data
+    })
+    const json = response.data;
+    setImageUploading(false)
+    window.alert(json.message)
   }
 
-  const openSaved = ()=>{
+  const openSaved = () => {
     router.push("/saved")
   }
 
-  const logOut = ()=>{
+  const logOut = () => {
     localStorage.setItem("user", "");
     router.push("/login")
   }
 
   return (
     <>
-    <div className="editing-page">
-    <nav className="editor-nav">
-      <button className="edit-button" onClick={openFilterModal}>Filter</button>
-      <button className="edit-button" onClick={toggleBrightnessSlider}>Brightness</button>
-      <div className="brightness-slider" style={{display: showBrightnessSlider}}>
-      <input type="range" min="-20" max="20" onChange={changeBrightness} value={brightness.toString()}/>
-      <button>Discard</button>
+      <div className="editing-page">
+        <nav className="editor-nav">
+          <button className="edit-button" onClick={openFilterModal}>Filter</button>
+          <button className="edit-button" onClick={toggleBrightnessSlider}>Brightness</button>
+          <div className="brightness-slider" style={{ display: showBrightnessSlider }}>
+            <input type="range" min="-20" max="20" onChange={changeBrightness} value={brightness.toString()} />
+            <button>Discard</button>
+          </div>
+          <button className="edit-button" onClick={rotateImage}>Rotate Image</button>
+          <button className="edit-button" onClick={applyContrast}>Contrast</button>
+          <button className="edit-button" onClick={startCropping}>Crop</button>
+          <button onClick={crop} style={{ display: showCroppingDone ? 'block' : 'none' }} className="crop-button">Done</button>
+          <button className="edit-button" onClick={toggleResizeSlider}>Resize</button>
+          <div className="resize-slider" style={{ display: showResizeSlider }}>
+            <input type="range" min="1" max="12" onChange={resizeImage} value={(size * 6).toString()} />
+          </div>
+          <button className="edit-button" onClick={discardChanges}>Discard Changes</button>
+          <button className="edit-button" onClick={removeImage}>Remove Image</button>
+          <button className="edit-button" onClick={saveImage}>Save Image</button>
+          {imageUploading && <p style={{ color: 'white' }}>Saving Image...</p>}
+          <button className="edit-button" onClick={handleDownload}>Download Image</button>
+        </nav>
+        <h1 className="user-name">{user?.name}</h1>
+        <div className="canvas-container">
+          <input type="file" id="file-input" style={{ display: fileInputVisible ? 'block' : 'none', color: 'white' }} onChange={selectImage} accept="png, jpeg, jpg, jfif" />
+          <canvas id="canvas" />
+        </div>
+        <button className="auth-button" onClick={openSaved}>Saved</button>
+        <button className="auth-button" onClick={logOut}>Logout</button>
       </div>
-      <button className="edit-button" onClick={rotateImage}>Rotate Image</button>
-      <button className="edit-button" onClick={applyContrast}>Contrast</button>
-      <button className="edit-button" onClick={startCropping}>Crop</button>
-      <button onClick={crop} style={{display:showCroppingDone?'block':'none'}} className="crop-button">Done</button>
-      <button className="edit-button" onClick={toggleResizeSlider}>Resize</button>
-      <div className="resize-slider" style={{display:showResizeSlider}}>
-      <input type="range" min="1" max="12" onChange={resizeImage} value={(size*6).toString()}/>
-      </div>
-      <button className="edit-button" onClick={discardChanges}>Discard Changes</button>
-      <button className="edit-button" onClick={removeImage}>Remove Image</button>
-      <button className="edit-button" onClick={saveImage}>Save Image</button>
-      {imageUploading && <p style={{color: 'white'}}>Saving Image...</p>}
-      <button className="edit-button" onClick={handleDownload}>Download Image</button>
-    </nav>
-    <h1 className="user-name">{user?.name}</h1>
-    <div className="canvas-container">
-    <input type="file" id="file-input" style={{display:fileInputVisible?'block':'none', color: 'white'}} onChange={selectImage} accept="png, jpeg, jpg, jfif"/>
-    <canvas id="canvas" />
-    </div>
-    <button className="auth-button" onClick={openSaved}>Saved</button>
-    <button className="auth-button" onClick={logOut}>Logout</button>
-    </div>
-    {setshowFilterModal && <FilterModal showModal={setsetshowFilterModal} convertToGrayScale={convertToGrayScale} goSepia={goSepia}/>}
+      {setshowFilterModal && <FilterModal showModal={setsetshowFilterModal} convertToGrayScale={convertToGrayScale} goSepia={goSepia} />}
     </>
   );
 }
